@@ -1,7 +1,7 @@
 VERSION = 3
 PATCHLEVEL = 18
 SUBLEVEL = 31
-EXTRAVERSION = -HolyDragon-v1
+EXTRAVERSION = -HolyDragon-v2
 NAME = Shuffling Zombie Juror
 
 # *DOCUMENTATION*
@@ -252,7 +252,7 @@ ARCH		?= $(SUBARCH)
 CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
 ARCH		:= arm64
 SUBARCH		:= arm64
-CROSS_COMPILE	:= /home/holyangel/android/FOP3/linaro-4.9.4-2017.01/bin/aarch64-linux-gnu-
+CROSS_COMPILE	:= /home/holyangel/android/linaro-4.9.4-2017.01/bin/aarch64-linux-gnu-
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
@@ -308,8 +308,7 @@ EXTRA_OPTS	:= -falign-functions=1 -falign-loops=1 -falign-jumps=1 -falign-labels
 				-fira-hoist-pressure -fira-loop-pressure \
 				-fgcse-lm -fgcse-sm -fgcse-las \
                 -fsched-spec-load \
-                 
-				
+
 # Arm Architecture Specific
 # fall back to -march=armv8-a in case the compiler isn't compatible
 # with -mcpu and -mtune
