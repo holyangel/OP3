@@ -306,8 +306,8 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 # Extra GCC Optimizations	  
 EXTRA_OPTS	:= -falign-functions=1 -falign-loops=1 -falign-jumps=1 -falign-labels=1 \
 				-fira-hoist-pressure -fira-loop-pressure \
-				-fgcse-lm -fgcse-sm -fgcse-las \
-                -fsched-spec-load \
+				-fgcse-sm -fgcse-las -fgcse-after-reload \
+                -fsched-pressure -fsched-spec-load \
 
 # Arm Architecture Specific
 # fall back to -march=armv8-a in case the compiler isn't compatible
