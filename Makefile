@@ -1,8 +1,8 @@
 VERSION = 3
 PATCHLEVEL = 18
 SUBLEVEL = 66
-EXTRAVERSION =
-NAME = Diseased Newt
+EXTRAVERSION = -HolyDragon-v3.9
+NAME = Apalala
 
 # *DOCUMENTATION*
 # To see a list of typical targets execute "make help"
@@ -248,8 +248,9 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/x86/ -e s/x86_64/x86/ \
 # "make" in the configured kernel build directory always uses that.
 # Default value for CROSS_COMPILE is not to prefix executables
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
-ARCH		?= $(SUBARCH)
-CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
+ARCH		:= arm64
+SUBARCH		:= arm64
+CROSS_COMPILE	:= /home/holyangel/android/aarch64-cortex_a57-linux-gnu-lin5.4-17.05/bin/aarch64-cortex_a57-linux-gnu-
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
