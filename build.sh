@@ -30,7 +30,7 @@
 	zu=~/Downloads/HD-OP3-AK2-O-V3/Upload/
 
 # Kernel zip Name
-	kn=HDK_OP3_AK2_V3.9.zip
+	kn=HDK_OP3_AK2_V3.9.1.zip
 ##############################
 
 # Cleanup
