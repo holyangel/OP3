@@ -2705,9 +2705,13 @@ static int check_modinfo(struct module *mod, struct load_info *info, int flags)
 
 	if (!strncmp("wlan", mod->name, 4))
 		goto end;
-	if (!strncmp("opchain", mod->name, 5))
+	if (!strncmp("qca_cld_wlan", mod->name, 5))
+		goto end;
+	if (!strncmp("br_netfilter", mod->name, 6))
+		goto end;
+	if (!strncmp("opchain", mod->name, 7))
 		goto end;	
-	if (!strncmp("defrag", mod->name, 6))
+	if (!strncmp("defrag", mod->name, 8))
 		goto end;
 
 	if (flags & MODULE_INIT_IGNORE_VERMAGIC)
