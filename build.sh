@@ -9,25 +9,25 @@
 	k=/home/holyangel/android/OP3
 
 # Path to clean out
-	co=~/android/OP3/out
+	co=$k/out
 
 # Compile Path to out
 	o="O=/home/holyangel/android/OP3/out"
 
 # Path to image.gz-dtb
-	i=~/android/OP3/out/arch/arm64/boot/Image.gz-dtb
+	i=$k/out/arch/arm64/boot/Image.gz-dtb
 
 # Kernel zip module path
-	zm=~/Downloads/HD-OP3-AK2-O-V3/build/system/lib/modules
+	zm=$k/build/system/lib/modules
 
 # Completed kernel zimage path
-	zi=~/Downloads/HD-OP3-AK2-O-V3/build/kernel/Image.gz-dtb
+	zi=$k/build/kernel/Image.gz-dtb
 	
 # Path to whole kernel zip folders
-	zp=~/Downloads/HD-OP3-AK2-O-V3/build/
+	zp=$k/build/
 	
 # Path to whole kernel zip folders
-	zu=~/Downloads/HD-OP3-AK2-O-V3/Upload/
+	zu=$k/upload/
 
 # Kernel zip Name
 	kn=HDK_OP3_AK2_V3.9.1.zip

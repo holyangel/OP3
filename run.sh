@@ -3,13 +3,13 @@
 ##############################
 
 # Defconfig
-	dc=hd2_defconfig
+	dc=HDO_defconfig
 
 # Path to kernel source
 	k=/home/holyangel/android/OP3
 
 # Path to clean out
-	co=~/android/OP3/out
+	co=$k/out
 
 # Compile Path to out
 	o="O=/home/holyangel/android/OP3/out"
