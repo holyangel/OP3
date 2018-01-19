@@ -10,6 +10,7 @@
 #
 # In this script: 
 # You will need to change the 'Source path to kernel tree' to match your current path to this source.
+# You will need to change the 'Compile Path to out' to match your current path to this source.
 # You will also need to edit the '-j32' under 'Start Compile' section and adjust that to match the amount of cores you want to use to build.
 # 
 # In Makefile: 
@@ -29,6 +30,9 @@
 
 # Source Path to clean(empty) out folder
 	co=$k/out
+
+# Compile Path to out 
+	o="O=/home/holyangel/android/OP3/out"
 
 # Source Path to compiled Image.gz-dtb
 	i=$k/out/arch/arm64/boot/Image.gz-dtb
@@ -54,7 +58,7 @@
 ############################################################
 
 	echo "	Cleaning up out directory"
-	rm -rf "$co"
+	rm -Rf out/
 	echo "	Out directory removed!"
 
 ############################################################
@@ -77,11 +81,11 @@
 ############################################################
 
 	echo "	First pass started.."
-	make O="$k"/out -j32
+	make "$o" -j32
 	echo "	First pass completed!"
 	echo "	"
 	echo "	Starting Second Pass.."
-	make O="$k"/out -j32
+	make "$o" -j32
 	echo "	Second pass completed!"
 
 ############################################################

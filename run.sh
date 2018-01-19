@@ -10,7 +10,8 @@
 # Already working build environment :P 
 #
 # In this script: 
-# You will need to change the 'Source path to kernel tree' to match your current path to this source.
+# You will need to change the 'Source Path to kernel tree' to match your current path to this source.
+# You will need to change the 'Compile Path to out' to match your current path to this source.
 # You will also need to edit the '-j32' under 'Start Compile' section and adjust that to match the amount of cores you want to use to build.
 # 
 # In Makefile: 
@@ -31,12 +32,15 @@
 # Source Path to clean(empty) out folder
 	co=$k/out
 
+# Compile Path to out 
+	o="O=/home/holyangel/android/OP3/out"
+
 ############################################################
 # Cleanup
 ############################################################
 
 	echo "	Cleaning up out directory"
-	rm -rf "$co"
+	rm -Rf out/
 	echo "	Out directory removed!"
 
 ############################################################
@@ -52,13 +56,13 @@
 ############################################################
 
 	echo "	Establishing build environment.."
-	make O="$k"/out "$dc"
+	make "$o" "$dc"
 
 ############################################################
 # Start Compile
 ############################################################
 
 	echo "	First pass started.."
-	make O="$k"/out -j32
+	make "$o" -j32
 	echo "	First pass completed!"
 	echo "	"
