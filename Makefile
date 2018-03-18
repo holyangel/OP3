@@ -351,8 +351,8 @@ CLANG_FLAGS := $(CLANG_TRIPLE) $(CLANG_IA_FLAG) $(OPT_FLAGS)
 
 HOSTCC       = gcc
 HOSTCXX      = g++
-HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -std=gnu89 $(GEN_OPT_FLAGS) $(EXTRA_OPTS) $(GRAPHITE)
-HOSTCXXFLAGS = -O2 $(GEN_OPT_FLAGS) $(ARM_ARCH_OPT) $(EXTRA_OPTS) $(GRAPHITE) -fdeclone-ctor-dtor
+HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -std=gnu89 $(GEN_OPT_FLAGS)
+HOSTCXXFLAGS = -O2 $(GEN_OPT_FLAGS)
 
 ifeq ($(shell $(HOSTCC) -v 2>&1 | grep -c "clang version"), 1)
 HOSTCFLAGS  += -Wno-unused-value -Wno-unused-parameter \
@@ -407,7 +407,7 @@ include $(srctree)/scripts/Kbuild.include
 
 # Make variables (CC, etc...)
 AS		= $(CROSS_COMPILE)as
-LD		= $(CROSS_COMPILE)ld.gold -fuse-ld=qcld --strip-debug
+LD		= $(CROSS_COMPILE)ld --strip-debug
 CC		= $(CROSS_COMPILE)gcc -g0
 CPP		= $(CC) -E -fdeclone-ctor-dtor -flto -fuse-linker-plugin
 AR		= $(LLVM_TRIPLE)ar
