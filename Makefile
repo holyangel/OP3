@@ -316,13 +316,13 @@ EXTRA_OPTS := \
 # fall back to -march=armv8-a in case the compiler isn't compatible
 # with -mcpu and -mtune
 ARM_ARCH_OPT := \
-	$(call cc-option,-march=armv8.1-a+crc+lse+crypto+fp+simd,) \
+	$(call cc-option,-march=armv8-a+crc+crypto+fp+simd,) \
 	-mtune=cortex-a57 -mcpu=cortex-a57+crc+crypto+fp+simd \
 	--param l1-cache-line-size=64 --param l1-cache-size=32 --param l2-cache-size=512 
 
 # Optional
 GEN_OPT_FLAGS := \
- -DNDEBUG -pipe \
+ -DNDEBUG -g0 -pipe \
  -fomit-frame-pointer 
 
 LTO_FLAGS := -flto -fuse-linker-plugin -fuse-ld=qcld
@@ -407,14 +407,14 @@ include $(srctree)/scripts/Kbuild.include
 
 # Make variables (CC, etc...)
 AS		= $(CROSS_COMPILE)as
-LD		= $(CROSS_COMPILE)ld.bfd -fuse-ld=qcld --strip-debug
+LD		= $(CROSS_COMPILE)ld.lld -m aarch64linux --strip-debug --lto-O3
 CC		= $(CROSS_COMPILE)gcc -g0
-CPP		= $(CC) -E -fdeclone-ctor-dtor -flto -fuse-linker-plugin
+CPP		= $(CC) -E -flto -fuse-linker-plugin
 AR		= $(LLVM_TRIPLE)ar
 NM		= $(CROSS_COMPILE)nm
 STRIP		= $(CROSS_COMPILE)strip
 OBJCOPY		= $(CROSS_COMPILE)objcopy
-OBJDUMP		= $(CROSS_COMPILE)objdump
+OBJDUMP		= $(LLVM_TRIPLE)objdump $(ARM_ARCH_OPT)
 AWK		= awk
 GENKSYMS	= scripts/genksyms/genksyms
 INSTALLKERNEL  := installkernel
