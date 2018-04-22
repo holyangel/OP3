@@ -1,8 +1,8 @@
 VERSION = 3
 PATCHLEVEL = 18
 SUBLEVEL = 66
-EXTRAVERSION = -HolyDragon-v4.1.0
-NAME = Azhi Dahaka
+EXTRAVERSION = -HolyDragon-v4.2.0
+NAME = Brinsop
 
 # *DOCUMENTATION*
 # To see a list of typical targets execute "make help"
