@@ -1053,8 +1053,9 @@ static int __init usb_init(void)
 	}
 	usb_init_pool_max();
 
-	usb_debugfs_init();
-
+	retval = usb_debugfs_init();
+	if (retval)
+		goto out;
 
 	usb_acpi_register();
 	retval = bus_register(&usb_bus_type);

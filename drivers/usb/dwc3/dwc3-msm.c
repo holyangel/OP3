@@ -279,53 +279,6 @@ struct dwc3_msm {
 	enum dwc3_perf_mode	curr_mode;
 };
 
-static RAW_NOTIFIER_HEAD(otg_switch_chain);
-int otg_switch = 0;
-struct dwc3_msm *opmdwc;
-
-static int call_otg_switch_notifiers(unsigned long val, void *v)
-{
-	return raw_notifier_call_chain(&otg_switch_chain,val,v);
-}
-
-int otg_switch_register_client(struct notifier_block *nb)
-{
-	int ret;
-	ret = raw_notifier_chain_register(&otg_switch_chain, nb);
-	if(ret)
-		pr_err("%s:notifier chain register fail!\n",__func__);
-
-	return 0;
-}
-
-EXPORT_SYMBOL(otg_switch_register_client);
-
-int otg_switch_unregister_client(struct notifier_block *nb)
-{
-	int ret;
-	ret = raw_notifier_chain_unregister(&otg_switch_chain, nb);
-	if(ret)
-		pr_err("%s:notifier chain unregister fail!\n",__func__);
-
-	return 0;
-}
-
-EXPORT_SYMBOL(otg_switch_unregister_client);
-
-
-static  int oem_test_id(int nr, const volatile unsigned long *addr, enum usb_otg_state otg_state)
-{
-	int ret = 0;
-
-	if (0 == otg_switch) {
-		ret = 1;
-	} else {
-		ret = test_bit(nr, addr);
-	}
-	printk("oem_test_id ret:%d, otg_switch:%d, otg_state:%d\n", ret, otg_switch, otg_state);
-	return ret;
-}
-
 #define USB_HSPHY_3P3_VOL_MIN		3050000 /* uV */
 #define USB_HSPHY_3P3_VOL_MAX		3300000 /* uV */
 #define USB_HSPHY_3P3_HPM_LOAD		16000	/* uA */
@@ -2368,7 +2321,7 @@ static void dwc3_ext_event_notify(struct dwc3_msm *mdwc)
 	if (mdwc->init)
 		flush_delayed_work(&mdwc->sm_work);
 
-	if (mdwc->id_state == DWC3_ID_FLOAT || otg_switch == 0) {
+	if (mdwc->id_state == DWC3_ID_FLOAT) {
 		dbg_event(0xFF, "ID set", 0);
 		set_bit(ID, &mdwc->inputs);
 	} else {
@@ -2883,49 +2836,6 @@ static int dwc3_msm_get_clk_gdsc(struct dwc3_msm *mdwc)
 	return 0;
 }
 
-static int set_otg_switch(const char *val, struct kernel_param *kp)
-{
-	sscanf(val, "%d", &otg_switch);
-
-	if (!strncasecmp(val, "0", 1)) {
-	       printk("OTG: disable! Current id_stat:%d \n", opmdwc->id_state);
-			if(opmdwc->id_state == DWC3_ID_GROUND)/*If OTG is connected, need to send notify.*/
-				dwc3_ext_event_notify(opmdwc);
-			call_otg_switch_notifiers(0,NULL);
-	}else if (!strncasecmp(val, "1", 1)){
-		printk("OTG: enable! Current id_stat:%d \n", opmdwc->id_state);
-		if(opmdwc->id_state == DWC3_ID_GROUND)/*If OTG is connected, need to send notify.*/
-			dwc3_ext_event_notify(opmdwc);
-		call_otg_switch_notifiers(1,NULL);
-	}
-	printk("OTG:write the otg switch to :%d\n",otg_switch);
-	return 0;
-}
-
-static int get_otg_switch(char *buffer, struct kernel_param *kp)
-{
-	int cnt = 0;
-
-	cnt = sprintf(buffer, "%d", otg_switch);
-	printk("OTG: the otg switch is:%d\n",otg_switch);
-
-	return cnt;
-}
-
-module_param_call(otg_switch, set_otg_switch, get_otg_switch, NULL, 0644);
-
-static int get_otg_state(char *buffer, struct kernel_param *kp)
-{
-	int cnt = 0;
-
-	cnt = sprintf(buffer, "%d", !opmdwc->id_state);
-	printk("OTG: the otg status is:%d\n",!opmdwc->id_state);
-
-	return cnt;
-}
-
-module_param_call(otg_state, NULL, get_otg_state, NULL, 0644);
-
 static ssize_t mode_show(struct device *dev, struct device_attribute *attr,
 		char *buf)
 {
@@ -3390,7 +3300,6 @@ static int dwc3_msm_probe(struct platform_device *pdev)
 		dwc3_ext_event_notify(mdwc);
 	}
 
-	opmdwc = mdwc;
 	/* If the controller is in DRD mode and USB power supply
 	 * is not used make the default mode of contoller as HOST
 	 * mode. User can change it later using sysfs
@@ -4096,7 +4005,7 @@ static void dwc3_msm_otg_sm_work(struct work_struct *w)
 		break;
 
 	case OTG_STATE_B_IDLE:
-		if (!oem_test_id(ID, &mdwc->inputs, mdwc->otg_state)) {
+		if (!test_bit(ID, &mdwc->inputs)) {
 			dbg_event(0xFF, "!id", 0);
 			mdwc->otg_state = OTG_STATE_A_IDLE;
 			work = 1;
@@ -4146,8 +4055,7 @@ static void dwc3_msm_otg_sm_work(struct work_struct *w)
 			}
 		} else {
 			mdwc->typec_current_max = 0;
-			if (mdwc->chg_type != DWC3_INVALID_CHARGER)
-				dwc3_msm_gadget_vbus_draw(mdwc, 0);
+			dwc3_msm_gadget_vbus_draw(mdwc, 0);
 			dev_dbg(mdwc->dev, "No device, allowing suspend\n");
 			dbg_event(0xFF, "RelNodev", 0);
 			pm_relax(mdwc->dev);
@@ -4156,7 +4064,7 @@ static void dwc3_msm_otg_sm_work(struct work_struct *w)
 
 	case OTG_STATE_B_PERIPHERAL:
 		if (!test_bit(B_SESS_VLD, &mdwc->inputs) ||
-				!oem_test_id(ID, &mdwc->inputs, mdwc->otg_state)) {
+				!test_bit(ID, &mdwc->inputs)) {
 			dbg_event(0xFF, "!id || !bsv", 0);
 			mdwc->otg_state = OTG_STATE_B_IDLE;
 			dwc3_otg_start_peripheral(mdwc, 0);
@@ -4210,7 +4118,7 @@ static void dwc3_msm_otg_sm_work(struct work_struct *w)
 
 	case OTG_STATE_A_IDLE:
 		/* Switch to A-Device*/
-		if (oem_test_id(ID, &mdwc->inputs, mdwc->otg_state)) {
+		if (test_bit(ID, &mdwc->inputs)) {
 			dbg_event(0xFF, "id", 0);
 			mdwc->otg_state = OTG_STATE_B_IDLE;
 			mdwc->vbus_retry_count = 0;
@@ -4242,9 +4150,8 @@ static void dwc3_msm_otg_sm_work(struct work_struct *w)
 		break;
 
 	case OTG_STATE_A_HOST:
-		if (oem_test_id(ID, &mdwc->inputs, mdwc->otg_state) || mdwc->hc_died
+		if (test_bit(ID, &mdwc->inputs) || mdwc->hc_died
 				|| mdwc->stop_host) {
-
 			dbg_event(0xFF, "id || hc_died || stop_host", 0);
 			dev_dbg(mdwc->dev, "%s state id || hc_died\n", state);
 			dwc3_otg_start_host(mdwc, 0);
