@@ -103,3 +103,5 @@ upload/
 build/kernel/Image\.gz-dtb
 
 *.gz-dtb
+
+build/Changelog\.txt
