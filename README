@@ -23,6 +23,15 @@ First create a folder named 'upload' at OP3 source root.
 
 All scripts build with 32 or 64 threads, you will want to change that to your own core count.
 
+'Changelog' file also needs edited to point to your kernel source directory
+
+As of version 4.2 of this kernel source, you will need libtinfo6.so in order to compile with lld.
+Libtinfo6-dev should be correct package name. Experimental for *buntu, may need compiled for archlinux.
+
+
+=======================================================================================================================
+
+
 
         Linux kernel release 3.x <http://kernel.org/>
 
