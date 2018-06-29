@@ -1,8 +1,8 @@
 VERSION = 3
 PATCHLEVEL = 18
 SUBLEVEL = 66
-EXTRAVERSION = -HolyDragon-v5.0.1
-NAME = Brinsop
+EXTRAVERSION = -HolyDragon-v6.0.0
+NAME = Chrysophylax
 
 # *DOCUMENTATION*
 # To see a list of typical targets execute "make help"
